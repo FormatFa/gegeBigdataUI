@@ -12,7 +12,7 @@
           <!-- 设置点击事件 -->
           <el-button style="float:right; padding: 3px 0" type="text" @click="openEdit(project.id)">编辑</el-button>
           <!--  -->
-          <el-button style="float:right; padding: 3px 0" type="text" @click="task.dialogShow = true">执行</el-button>
+          <el-button style="float:right; padding: 3px 0" type="text" @click="queryTask(project.id)">运行</el-button>
         </div>
         <div>
           {{project.desc}}
@@ -25,7 +25,22 @@
   :visible.sync="task.dialogShow"
   :before-close="handleCloseTask"
   >
-
+  <el-row>
+    <!-- 状态 -->
+    <div>任务状态:{{getState}}</div>
+    <!-- 日志 -->
+    <div>
+      <el-input
+      :readonly="true"
+      v-model="task.log"
+        type="textarea">
+      </el-input>
+      </div>
+  </el-row>
+  <el-row>
+    <el-button type="primary" @click="submitTask(task.projectid)">重新执行</el-button>
+    <el-button type="primary" @click="queryTask(task.projectid)">刷新日志和状态</el-button>
+  </el-row>
 
   </el-dialog>
 
@@ -36,16 +51,38 @@
 <script>
 import {get} from '../api/http.js'
 import {arrayFill} from '../utils/tools.js'
+import {queryTask,submitTask} from '../api/etlapi.js'
 // ELT界面
 export default {
+  computed:{
+      getState(){
+        if(this.task.state=='dead')
+        {
+          return '已停止'
+        }
+        else if(this.task.state=='success')
+        {
+          return '执行成功'
+        }
+        else if(this.task.state=="running")
+        {
+          return "运行中"
+        }
+        else
+        return '未知状态:'+this.task.state
+      }
+  },
 // 请求数据
 data(){
   // 
   return {
     // 任务相关
     task:{
-      dialogShow:false
-
+      dialogShow:false,
+      // 当前选择的任务
+      projectid:0,
+      log:'xxx',
+      state:''
     },
     //所有工程
     projects:[]
@@ -60,6 +97,50 @@ mounted(){
 },
 methods:{
 
+  // 设置展示的结果
+  setResult(data){
+    if(data.state.msg)
+    {
+      this.task.log=data.msg
+    }
+    else
+    {
+
+    this.task.log=data.log.log.join('\n')
+    this.task.state = data.state.state
+    }
+  },
+  queryTask(projectid){
+    this.task.projectid=projectid
+    this.task.dialogShow = true
+    queryTask({
+      id:projectid
+    }).then(res=>{
+      console.log(res.data)
+      // 得到的结果，包括日志，状态这些
+      this.setResult(res.data)
+
+    }).catch(err=>{
+      console.log(err)
+    })
+
+  },
+  // 提交任务 
+submitTask(projectid)
+{
+this.task.dialogShow = true
+console.debug("提交任务:"+projectid)
+submitTask({
+  id:projectid
+}).then(res=>{
+  console.log("提交结果:")
+  console.log(res)
+}).catch(err=>{
+  console.error("提交任务失败")
+  console.error(err)
+})
+
+},
 // 关闭执行任务对话框
 handleCloseTask()
 {
@@ -86,7 +167,6 @@ handleCloseTask()
       // 填充数据到projects
       arrayFill(this.projects,res.data)
       console.log(this.projects)
-
       // 填充数据到projects里
     }).catch(err=>{
       console.log("请求数据失败")

@@ -42,7 +42,7 @@ export default {
     methods:{ 
         getConf(){
           return {
-            columns:this.columns
+            columns:this.columns.join(",")
           }
         },
         // 可以执行的操作
@@ -72,7 +72,7 @@ export default {
       console.log("col-select mounted了，设置父组件传递过来的conf")
       //获取配置里的数据
       console.debug(this.conf)
-      this.columns=this.conf['columns']
+      this.columns=this.conf['columns'].split(",")
       this.inputCol=this.columns.join(",")
     },
     computed:{

@@ -11,11 +11,24 @@ import compMixin from '../baseComponent.js'
 export default {
     mixins:[compMixin],
     // csv 的数据源
-    name:"source-csv"
+    name:"source-csv",
+    mounted(){
+      this.path = this.conf.path;
+      this.separator = this.conf.separator;
+    }
     ,data(){
         return {
             separator:",",
             path:""
+        }
+    },
+    methods:{
+        getConf()
+        {
+            return {
+                 separator:this.separator,
+            path:this.path
+            }
         }
     }
 

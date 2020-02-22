@@ -13,7 +13,13 @@ var component = {
         // 每个组件都要实现这个方法，这个方法用于在调用保存时，根据组件当前编辑框的东西，返回配置
         getConf(){
             console.warn(this.name+ "组件没有实现getConf方法，这个提示在baseComponent.js中")
-            return {}
+            // 没有就直接使用myconf
+            let result = {}
+            for(let key in this.myconf)
+            {
+                result[key]=this.myconf[key]
+            }
+            return result
         }
     }
 

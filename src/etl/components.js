@@ -9,7 +9,7 @@ let sources = [
             // 数据源的路径
             path:"",
             // 分隔符
-            separator:"",
+            separator:",",
         }
 
     }
@@ -24,6 +24,19 @@ let transforms = [
             columns:['字段1','字段2']
         }
     },
+    {
+        value:"col-groupby",
+        label:"分组聚合计算",
+        conf:{
+            // 
+            columns:"",
+            // 聚合的字段
+            aggColumn:"",
+            operation:"",
+            // 聚合后的名字
+            alias:""
+        }
+    }
 ]
 ;
 let sinks = [

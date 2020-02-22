@@ -13,7 +13,12 @@ import compMixin from '../baseComponent.js'
 export default {
     mixins:[compMixin],
     name:"sink-csv",
+    mounted(){
+      this.path = this.conf.path;
+      this.separator = this.conf.separator;
+    },
     methods:{
+      
       getConf(){
         return {
           path:this.path,

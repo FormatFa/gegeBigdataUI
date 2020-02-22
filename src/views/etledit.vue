@@ -15,8 +15,11 @@
 
     <el-card  v-for="(comp,index) in comps" :key="index">
         <!-- 卡片头 -->
-        <div>
+        <div slot="header">
             <span>组件 {{index}}</span>
+             <el-button style="float:right; padding: 3px 0" type="text" @click="deleteComponent(index)">删除组件</el-button>
+
+
         </div>
         <!-- 指定组件的ref,由compi 组成，方便保存时直接循环 遍历组件 -->
         <!-- 传递conf配置 进去 -->
@@ -47,6 +50,7 @@ import {get,put} from '../api/http.js'
 import SourceCsv from '../components/source/source-csv'
 import ColSelect from '../components/transform/col-select'
 import SinkCsv from '../components/sink/sink-csv'
+import ColGroupby from '../components/transform/col-groupby'
 
 // 所有组件
 import components from '../etl/components.js'
@@ -55,7 +59,7 @@ export default {
 
 // 注册组件
 components:{
-    SourceCsv,ColSelect,SinkCsv
+    SourceCsv,ColSelect,SinkCsv,ColGroupby
 
 },
 /*
@@ -67,6 +71,13 @@ mounted(){
 },
 // 
 methods:{
+    
+    
+    deleteComponent(index){
+        console.debug("删除组件:"+index)
+        this.comps.splice(index,1)
+
+    },
     // 保存改变
     saveChange(){
         // 获取各个组件的值,每个组件都实现getData方法，返回组件的原数据

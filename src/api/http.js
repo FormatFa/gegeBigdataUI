@@ -1,5 +1,6 @@
 import axios from 'axios'
-// import QS from 'qs'
+// 使用qs post时提交的会是表达，而不是body里的json
+import QS from 'qs'
 // import {resolve,reject} from 'q'
 // import router  from '../router.js'
 // import {Message} from 'element-ui'
@@ -34,9 +35,11 @@ export function put(url,params,config){
 
 //post
 export function post(url,params,config){
+    console.log("post:"+url)
+
     return new Promise((resolve,reject)=>{
 
-        axios.post(url,params,config).then(res=>{
+        axios.post(url, QS.stringify( params),config).then(res=>{
             resolve(res)
         }).catch(err=>{
             reject(err)
