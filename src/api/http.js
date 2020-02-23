@@ -31,7 +31,18 @@ export function put(url,params,config){
 
     })
 }
+//put 
+export function delete2(url,params,config){
+    return new Promise((resolve,reject)=>{
 
+        axios.delete(url,params,config).then(res=>{
+            resolve(res)
+        }).catch(err=>{
+            reject(err)
+        })
+
+    })
+}
 
 //post
 export function post(url,params,config){

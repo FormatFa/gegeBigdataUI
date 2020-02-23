@@ -7,7 +7,7 @@ devServer:{
     port:'8090',
     // 将/api下的请求代理到django后台区
     proxy:{
-        '/etl':{
+        '/api':{
             target:'http://localhost:8000',
             ws:true
         }

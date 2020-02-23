@@ -3,6 +3,15 @@
 <div>
     <h1> 编辑ETL 工程 : {{ $route.params.id }}</h1>
 
+    <!-- 工程名字什么的 -->
+    <el-row>
+        <el-input placeholder="工程名字" v-model="project.name">
+        </el-input>
+        <el-input type="textarea" placeholder="工程描述" v-model="project.desc">
+
+        </el-input>
+    </el-row>
+
     <!-- 保存，等按钮bar  -->
     <el-row type="flex" justify="end">
         <el-col :span="40">
@@ -90,8 +99,9 @@ methods:{
         });
         console.log("保存成功:")
         console.log(this.comps)
-        put('/etl/projects/'+this.id+"/",{
-            name:this.project['name'],
+        put('/api/etl/projects/'+this.id+"/",{
+            name:this.project.name,
+            desc:this.project.desc,
             data: JSON.stringify(this.comps)
         }).then(res=>{
             console.log("post 保存成功!") 
@@ -151,7 +161,7 @@ methods:{
     },
     // 根据project id 请求 后台已经保存的数据
     requestData(id){
-        get("/etl/projects/"+id).then(res=>{
+        get("/api/etl/projects/"+id).then(res=>{
             console.log("1. 请求到编辑etl的 data:")
             this.project=res.data
             console.log("2. 转换请求到的字符串为obj")
@@ -177,15 +187,19 @@ data(){
 
     console.log("get data")
     return {
-        
+        project:{
+            id:"",
+            data:"",
+            name:"",
+            desc:""
+        },
         newcomp:{
             compid:"",
             options:components
 
             
         },
-        //请求到的工程原数据
-        project:{},
+        
 
         comp:"col-select",
         //数据源

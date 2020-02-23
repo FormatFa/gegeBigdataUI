@@ -1,6 +1,10 @@
 <template>
   <div>
+    <el-row>
       <h1>ETL</h1>
+      <el-button @click="addProject" type='primary'>添加</el-button>
+    </el-row>
+      
 
   <!-- 循环卡片列表 -->
       <el-card
@@ -13,6 +17,7 @@
           <el-button style="float:right; padding: 3px 0" type="text" @click="openEdit(project.id)">编辑</el-button>
           <!--  -->
           <el-button style="float:right; padding: 3px 0" type="text" @click="queryTask(project.id)">运行</el-button>
+          <el-button style="float:right; padding: 3px 0" type="text" @click="deleteTask(project.id)">删除</el-button>
         </div>
         <div>
           {{project.desc}}
@@ -49,7 +54,7 @@
 </template>
 
 <script>
-import {get} from '../api/http.js'
+import {get, post,delete2} from '../api/http.js'
 import {arrayFill} from '../utils/tools.js'
 import {queryTask,submitTask} from '../api/etlapi.js'
 // ELT界面
@@ -96,7 +101,19 @@ mounted(){
   this.requestData()
 },
 methods:{
+  addProject(){
+    console.log('添加project')
+    post('/api/etl/projects/',{
 
+    }).then(res=>{
+      console.log("创建工程成功")
+      console.log(res)
+      
+    }).catch(err=>{
+      console.log(err)
+    })
+
+  },
   // 设置展示的结果
   setResult(data){
     if(data.state.msg)
@@ -110,9 +127,19 @@ methods:{
     this.task.state = data.state.state
     }
   },
+  deleteTask(projectid){
+    delete2('api/etl/projects/'+projectid).then(res=>{
+      console.log("删除成功")
+      console.log(res)
+    }).catch(err=>{
+      console.log(err)
+    })
+
+  },
   queryTask(projectid){
     this.task.projectid=projectid
     this.task.dialogShow = true
+    
     queryTask({
       id:projectid
     }).then(res=>{
@@ -161,7 +188,7 @@ handleCloseTask()
     }))
   },
   requestData(){
-    get("/etl/projects/?format=json").then(res=>{
+    get("/api/etl/projects/?format=json").then(res=>{
       console.log("请求所有project:")
       console.log(res.data)
       // 填充数据到projects
