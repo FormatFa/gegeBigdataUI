@@ -25,17 +25,36 @@
       group:<div>{{fileInfo.group}}</div>
       owener:<div>{{fileInfo.owner}}</div>
       权限:<div>{{fileInfo.permission}}</div>
-
+      <!-- 创建文件夹等工具 -->
+      <!-- 当前目录是文件夹时显示 -->
+      <el-row  v-if="fileInfo.type == 'DIRECTORY'">
+        <el-input placeholder="新文件夹路径" v-model="newdir.dirpath"></el-input> <el-button @click="doNewDir">创建文件夹</el-button>
+      </el-row>
       </el-dialog>
+
   </div>
 </template>
 
 
 <script>
-import {get} from '../api/http.js'
+import {newdir,list_status} from '../api/clusterapi.js'
+
 // 集群管理界面
 export default {
   methods:{
+    // 新建文件夹
+    doNewDir(){
+      console.log("new dir..."+this.newdir.dirpath)
+        newdir({
+          path:this.newdir.dirpath
+        }).then(res=>{
+          console.log('创建文件成功')
+          console.log(res)
+        }).catch(err=>{
+          console.log('创建文件失败')
+          console.log(err)
+        })
+    },
     viewfile(data,node){
       let path = this.getPath(node)
       console.log("ab:"+path)
@@ -44,6 +63,7 @@ export default {
       console.log(node)
       this.showDialog=true
       this.fileInfo=data
+      this.newdir.dirpath = this.filePath
 
     },
     // 获取完整路径
@@ -80,14 +100,20 @@ export default {
 
       let abpath = this.getPath(node)
       console.log(abpath)
-      get('/api/cluster/list_status',{
+      list_status({
         path:abpath
       }).then(res=>{
-        let status = res.data.status
+        let status = res.status
         console.log(status)
         resolve(status)
       }).catch(err=>{
         console.log(err)
+        this.$alert(err,'加载文件列表失败')
+        this.$message({
+          message:'加载HDFS文件列表失败',
+          type:'error'
+        })
+        resolve([])
       })
 
       console.log("加载node")
@@ -98,10 +124,14 @@ export default {
   },
 data(){
   return {
+    newdir:{
+      dirpath:""
+    },
     showDialog:false,
     // 当前点击文件路径
     filePath:"",
     fileInfo:{
+      type:"",
       accessTime:"",
       blockSize:"",
       group:"",

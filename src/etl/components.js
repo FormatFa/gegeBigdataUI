@@ -21,7 +21,7 @@ let transforms = [
         label: "选择某些列",
         conf:{
             //选择的列
-            columns:['字段1','字段2']
+            columns:'字段1,字段2'
         }
     },
     {

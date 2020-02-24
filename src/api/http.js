@@ -5,6 +5,8 @@ import QS from 'qs'
 // import router  from '../router.js'
 // import {Message} from 'element-ui'
 
+// const faxios = axios.default;
+
 // 封装axios
 export function get(url,params){
     return new Promise((resolve,reject)=>{
@@ -18,7 +20,27 @@ export function get(url,params){
         })
     })
 }
-
+// fxx,请求api专用
+export function fget(url,params){
+    return new Promise((resolve,reject)=>{
+        // 请求成功
+        axios.get(url,{params:params}).then(res=>{
+            let resdata = res.data
+            // 得到数据,判断返回状态码
+            if(resdata.code!=-1)
+            {
+                resolve(resdata.data)
+            }
+            else
+            // 传递错误信息，给catch,这里出去的是服务器的错误
+            reject(resdata.msg)
+        })
+        .catch(err=>{
+            // 这里出去的。。。
+            reject(err)
+        })
+    })
+}
 //put 
 export function put(url,params,config){
     return new Promise((resolve,reject)=>{
@@ -59,3 +81,25 @@ export function post(url,params,config){
     })
 }
 
+
+export function fpost(url,params,config){
+    console.log("post:"+url)
+
+    return new Promise((resolve,reject)=>{
+
+        axios.post(url, QS.stringify( params),config).then(res=>{
+            let resdata = res.data
+            // 得到数据,判断返回状态码
+            if(resdata.code!=-1)
+            {
+                resolve(resdata.data)
+            }
+            else
+            // 传递错误信息，给catch,这里出去的是服务器的错误
+            reject(resdata.msg)
+        }).catch(err=>{
+            reject(err)
+        })
+
+    })
+}

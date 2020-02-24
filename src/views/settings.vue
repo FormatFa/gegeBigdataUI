@@ -15,12 +15,19 @@
   </el-card>
   <el-card>
     <div slot="header">
-      <span>Hadoop集群设置</span>
+      <span>集群管理配置</span>
     </div>
     <el-row>
-      <el-input placeholder='地址' v-model="config.hdfsUrl"></el-input><el-input placeholder='端口'></el-input>
+      HDFS地址: <el-input placeholder='地址' v-model="config.hdfsUrl"></el-input><el-input placeholder='端口'></el-input>
     </el-row>
-    
+  </el-card>
+  <el-card>
+    <div slot="header">
+      <span>数据查询</span>
+    </div>
+    <el-row>
+      Hive Server2 地址: <el-input placeholder='地址' v-model="config.hiveServer2Url"></el-input><el-input placeholder='端口'></el-input>
+    </el-row>
   </el-card>
 </el-row>
 

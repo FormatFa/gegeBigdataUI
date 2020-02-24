@@ -32,6 +32,10 @@ export default {
       activeIndex:"1"
     }
   },
+  mounted(){
+    
+  },
+
   methods:
   {
     // 点击选择不见后的

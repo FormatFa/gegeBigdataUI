@@ -165,8 +165,9 @@ methods:{
             console.log("1. 请求到编辑etl的 data:")
             this.project=res.data
             console.log("2. 转换请求到的字符串为obj")
-
+            console.log(res.data)
             // 配置部分的data
+            if(this.project['data']!='')
             this.comps =  JSON.parse(this.project['data'])
             console.log(this.comps)
 

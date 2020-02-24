@@ -16,7 +16,7 @@
           <!-- 设置点击事件 -->
           <el-button style="float:right; padding: 3px 0" type="text" @click="openEdit(project.id)">编辑</el-button>
           <!--  -->
-          <el-button style="float:right; padding: 3px 0" type="text" @click="queryTask(project.id)">运行</el-button>
+          <el-button style="float:right; padding: 3px 0"  type="text" @click="queryTask(project.id)">运行</el-button>
           <el-button style="float:right; padding: 3px 0" type="text" @click="deleteTask(project.id)">删除</el-button>
         </div>
         <div>
@@ -43,7 +43,7 @@
       </div>
   </el-row>
   <el-row>
-    <el-button type="primary" @click="submitTask(task.projectid)">重新执行</el-button>
+    <el-button type="primary" :loading="task.executing" @click="submitTask(task.projectid)">重新执行</el-button>
     <el-button type="primary" @click="queryTask(task.projectid)">刷新日志和状态</el-button>
   </el-row>
 
@@ -81,13 +81,15 @@ export default {
 data(){
   // 
   return {
+
     // 任务相关
     task:{
       dialogShow:false,
       // 当前选择的任务
       projectid:0,
       log:'xxx',
-      state:''
+      state:'',
+      executing:false
     },
     //所有工程
     projects:[]
@@ -122,7 +124,6 @@ methods:{
     }
     else
     {
-
     this.task.log=data.log.log.join('\n')
     this.task.state = data.state.state
     }
@@ -146,9 +147,9 @@ methods:{
       console.log(res.data)
       // 得到的结果，包括日志，状态这些
       this.setResult(res.data)
-
-    }).catch(err=>{
-      console.log(err)
+    }).catch((err)=>{
+      // this.$alert(err,'查询任务失败')
+      this.task.log = "查询任务失败!:"+err
     })
 
   },
@@ -156,6 +157,7 @@ methods:{
 submitTask(projectid)
 {
 this.task.dialogShow = true
+this.task.executing = true
 console.debug("提交任务:"+projectid)
 submitTask({
   id:projectid
@@ -165,6 +167,9 @@ submitTask({
 }).catch(err=>{
   console.error("提交任务失败")
   console.error(err)
+   this.$alert(err,'执行任务失败')
+}).then(()=>{
+  this.task.executing=false
 })
 
 },
