@@ -1,15 +1,17 @@
 <template>
   <div>
-    <el-row>
-      <h1>ETL</h1>
-      <el-button @click="addProject" type='primary'>添加</el-button>
+    <el-row type="flex" justify="space-between">
+      <div style="display:inline;font-size:x-large;" >ETL工程管理</div>
+      <el-button @click="addProject" type='primary' style="float:right;">添加</el-button>
     </el-row>
       
-
+    <el-row :gutter="40">
   <!-- 循环卡片列表 -->
-      <el-card
-      v-for="project in projects"
+      <el-col :span="6"
+       v-for="project in projects"
       :key="project.id"
+      >
+      <el-card
       >
         <div slot="header" >
           <span>{{project.name}}</span>
@@ -23,6 +25,8 @@
           {{project.desc}}
         </div>
       </el-card>
+      </el-col>
+      </el-row>
 
   <!-- 执行任务对话框 -->
   <el-dialog
@@ -32,10 +36,11 @@
   >
   <el-row>
     <!-- 状态 -->
-    <div>任务状态:{{getState}}</div>
+    <div>任务状态:{{this.task.stateText}}</div>
     <!-- 日志 -->
     <div>
       <el-input
+      :autosize="{minRows:2,maxRows:10}"
       :readonly="true"
       v-model="task.log"
         type="textarea">
@@ -44,7 +49,7 @@
   </el-row>
   <el-row>
     <el-button type="primary" :loading="task.executing" @click="submitTask(task.projectid)">重新执行</el-button>
-    <el-button type="primary" @click="queryTask(task.projectid)">刷新日志和状态</el-button>
+    <el-button :loading="querying" type="primary" @click="queryTask(task.projectid)">刷新日志和状态</el-button>
   </el-row>
 
   </el-dialog>
@@ -60,36 +65,23 @@ import {queryTask,submitTask} from '../api/etlapi.js'
 // ELT界面
 export default {
   computed:{
-      getState(){
-        if(this.task.state=='dead')
-        {
-          return '已停止'
-        }
-        else if(this.task.state=='success')
-        {
-          return '执行成功'
-        }
-        else if(this.task.state=="running")
-        {
-          return "运行中"
-        }
-        else
-        return '未知状态:'+this.task.state
-      }
+ 
   },
 // 请求数据
 data(){
   // 
   return {
-
+    querying:false,
     // 任务相关
     task:{
       dialogShow:false,
       // 当前选择的任务
       projectid:0,
-      log:'xxx',
+      log:'暂无日志',
       state:'',
-      executing:false
+      executing:false,
+      // 状态文字
+      stateText:""
     },
     //所有工程
     projects:[]
@@ -103,6 +95,22 @@ mounted(){
   this.requestData()
 },
 methods:{
+       getState(state){
+        if(state=='dead')
+        {
+          return '已停止'
+        }
+        else if(state=='success')
+        {
+          return '执行成功'
+        }
+        else if(state=="running")
+        {
+          return "运行中"
+        }
+        else
+        return '未知状态:'+state
+      },
   addProject(){
     console.log('添加project')
     post('/api/etl/projects/',{
@@ -110,7 +118,7 @@ methods:{
     }).then(res=>{
       console.log("创建工程成功")
       console.log(res)
-      
+      this.requestData()
     }).catch(err=>{
       console.log(err)
     })
@@ -118,20 +126,27 @@ methods:{
   },
   // 设置展示的结果
   setResult(data){
+    console.log("设置结果")
+    console.log(data)
     if(data.state.msg)
     {
-      this.task.log=data.msg
+      this.task.log=data.state.msg
+      this.task.stateText = "请求查询错误"
     }
     else
     {
     this.task.log=data.log.log.join('\n')
     this.task.state = data.state.state
+    this.task.stateText = this.getState(this.task.state)
     }
   },
   deleteTask(projectid){
     delete2('api/etl/projects/'+projectid).then(res=>{
       console.log("删除成功")
       console.log(res)
+
+      // 刷新数据
+      this.requestData()
     }).catch(err=>{
       console.log(err)
     })
@@ -140,16 +155,20 @@ methods:{
   queryTask(projectid){
     this.task.projectid=projectid
     this.task.dialogShow = true
-    
+    this.querying = true
     queryTask({
       id:projectid
     }).then(res=>{
-      console.log(res.data)
+
+      console.log("查询任务完成")
+      console.log(res)
       // 得到的结果，包括日志，状态这些
-      this.setResult(res.data)
+      this.setResult(res)
     }).catch((err)=>{
       // this.$alert(err,'查询任务失败')
       this.task.log = "查询任务失败!:"+err
+    }).then(()=>{
+      this.querying=false
     })
 
   },

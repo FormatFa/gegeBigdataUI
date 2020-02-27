@@ -25,11 +25,7 @@ export default {
     // csv 的数据源
     name:"col-groupby",
     mounted(){
-        // 遍历prop里传递过来的，赋值给data里的
-            for(let key in this.conf)
-            {
-                this.myconf[key]=this.conf[key]
-            }
+
     },
     data(){
 

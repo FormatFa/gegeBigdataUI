@@ -10,7 +10,26 @@ export function arrayFill(a1,a2)
     }
 
 }
+// 格式化文件大小
+export function formatFileSize(size)
+{
+    if(size<1024){
+        return (size)+ "b"
+    }
+    else if(size<1024*1024)
+    {
+        return (size/1024).toFixed(2)+"k"
+    }
+    else if(size<1024*1024*1024)
+    {
+        return (size/1024/1024).toFixed(2)+"m"
+    }
+    else if(size<1024*1024*1024*1024)
+    {
+        return (size/1024/1024/1024).toFixed(2)+"g"
+    }
 
+}
 // 通用错误框
 export function errorDialog(vue,message)
 {

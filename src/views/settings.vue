@@ -1,7 +1,7 @@
 <template>
   
   <div>
-<h2>settings</h2>
+<h2>连接配置</h2>
 <el-button type="primary" @click="saveSetting"> 保存</el-button>
 <!-- 设置界面 -->
 <el-row>
@@ -18,7 +18,7 @@
       <span>集群管理配置</span>
     </div>
     <el-row>
-      HDFS地址: <el-input placeholder='地址' v-model="config.hdfsUrl"></el-input><el-input placeholder='端口'></el-input>
+      HDFS地址: <el-input placeholder='地址' v-model="config.hdfsUrl"></el-input>
     </el-row>
   </el-card>
   <el-card>
@@ -26,7 +26,8 @@
       <span>数据查询</span>
     </div>
     <el-row>
-      Hive Server2 地址: <el-input placeholder='地址' v-model="config.hiveServer2Url"></el-input><el-input placeholder='端口'></el-input>
+      Hive Server2 地址: <el-input placeholder='地址' v-model="config.hiveServer2Url"></el-input>
+      
     </el-row>
   </el-card>
 </el-row>

@@ -3,10 +3,11 @@
 
     <!-- 可视化查询功能 ,会话相关-->
    <el-row>
-
+       <el-input v-model="database" placeholder="数据库名称"></el-input>
    </el-row>
     <el-row>
         <h1>Hive 查询 </h1>
+
         <el-input
         type="textarea"
         placeholder="输入Hive SQL"
@@ -23,7 +24,7 @@
     <div>共 {{result.data.length}} 行</div>
     <!-- 下载csv等 -->
     <el-row>
-        <el-button>下载数据</el-button>
+        <!-- <el-button>下载数据</el-button> -->
     
     </el-row>
     <el-table
@@ -42,19 +43,20 @@
 
 <script>
 // 可视化查询
-import {post} from '../api/http.js'
+import { post} from '../api/http.js'
 export default {
     methods:{
         dohivesql(){
-            this.queryHiveSql('xx','csv')
+            this.queryHiveSql(this.database,this.sql,'json')
         },
         // 查询得到结果
-        queryHiveSql(sql,format){
+        queryHiveSql(database,sql,format){
             console.log(sql)
             this.execute.isExecuting=true
             post('/api/query/hivesql',{
                 sql:sql,
-                format:format
+                format:format,
+                database:database
             }).then(res=>{
                 console.log("请求查询数据")
                 console.log(res)
@@ -87,7 +89,8 @@ export default {
                 ],
                 data:[]
             },
-            sql:""
+            sql:"",
+            database:""
 
         }
     }

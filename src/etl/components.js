@@ -36,6 +36,21 @@ let transforms = [
             // 聚合后的名字
             alias:""
         }
+    },{
+        value:"row-limit",
+        label:"提取前面N行",
+        conf:{
+            num:10
+        }
+    },{
+        value:"orderby",
+        label:"按字段排序",
+        conf:{
+            // 字段名字
+            column:"",
+            // 顺序,默认降序
+            order:"desc",
+        }
     }
 ]
 ;
@@ -49,11 +64,19 @@ let sinks = [
             // 数据分割符
             separator:","
         }
+    },
+    {
+        value:"sink-console",
+        label:"打印到日志",
+        conf:{
+            // 限制的行数
+            limit:500
+        }
+
     }
 ];
 // sink，保存
 let options = [
-
     {
         value: "sources",
         label: "数据读取",

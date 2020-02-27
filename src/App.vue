@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <el-container>
-      <el-header> <el-menu
+    <el-container :direction="horizontal ">
+   
+      <el-header> 
+        <el-container>
+             <h1>xx平台</h1>
+        <el-menu
     @select="handleSelect"
     :router="true"
     :default-active="activeIndex"
@@ -11,7 +15,9 @@
     <el-menu-item index="/etl">数据ETL</el-menu-item>
     <el-menu-item index="/query">数据查询</el-menu-item>
     <el-menu-item index="/settings">连接配置</el-menu-item>
-    </el-menu></el-header>
+    </el-menu>
+    </el-container>
+    </el-header>
       <el-main><router-view></router-view></el-main>
     </el-container>
    
@@ -34,7 +40,7 @@ export default {
   },
   mounted(){
     
-  },
+  }, 
 
   methods:
   {

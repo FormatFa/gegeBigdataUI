@@ -4,8 +4,7 @@
     <!-- 集群常见端口 -->
 
       <h1>HDFS 文件浏览 </h1>
-      
-
+    
       <!-- 集群文件浏览 -->
       <el-tree 
       :props="props"
@@ -20,15 +19,24 @@
       title="文件信息"
       :visible.sync="showDialog"
       >
-      完整路径: <div>{{filePath}}</div>
-      文件大小:<div>{{fileInfo.length}}</div>
-      group:<div>{{fileInfo.group}}</div>
-      owener:<div>{{fileInfo.owner}}</div>
-      权限:<div>{{fileInfo.permission}}</div>
+      <div>
+     <div> 完整路径: <span>{{filePath}}</span></div>
+     <div> 文件大小:<span>{{ FileSize (fileInfo.length) }}</span></div>
+     <div> group:<span>{{fileInfo.group}}</span></div>
+     <div> owener:<span>{{fileInfo.owner}}</span></div>
+    <div>  权限:<span>{{fileInfo.permission}}</span></div>
+      </div>
       <!-- 创建文件夹等工具 -->
       <!-- 当前目录是文件夹时显示 -->
       <el-row  v-if="fileInfo.type == 'DIRECTORY'">
-        <el-input placeholder="新文件夹路径" v-model="newdir.dirpath"></el-input> <el-button @click="doNewDir">创建文件夹</el-button>
+        <el-input placeholder="新文件夹路径" v-model="newdir.dirpath"></el-input> <el-button :loading="newdir.loading" @click="doNewDir">创建文件夹</el-button>
+      </el-row>
+      <el-row>
+        <el-button :loading="deleteloading" type="danger" @click="deletedir">删除文件</el-button>
+      </el-row>
+      <!-- 预览文件 -->
+      <el-row v-if="fileInfo.type == 'FILE'">
+        <div></div>
       </el-row>
       </el-dialog>
 
@@ -37,27 +45,74 @@
 
 
 <script>
-import {newdir,list_status} from '../api/clusterapi.js'
-
+import {newdir,list_status,deletedir} from '../api/clusterapi.js'
+import {formatFileSize} from '../utils/tools'
 // 集群管理界面
 export default {
+  computed:{
+   
+  },
   methods:{
+     FileSize(size){
+      return formatFileSize(size)
+    },
+    // 刷新目录数
+    refresh(){
+      console.log("刷新文件列表 ")
+      this.node_root.childNodes =[];
+      this.loadNode(this.node_root,this.resolve_root)
+    },
+    // 删除文件夹:
+    deletedir(){
+            this.deleteloading =true
+      console.log("删除文件"+this.filePath)
+        deletedir({
+          path:this.filePath
+        }).then(res=>{
+          this.$message({
+            message:"删除成功",
+            type:"success"
+          })
+          this.refresh()
+          console.log(res)
+        }).catch(err=>{
+           this.$message({
+            message:"删除失败",
+            type:"error"
+          })
+          console.error(err)
+        }).then(()=>{
+          this.deleteloading =false
+        })
+
+    },
     // 新建文件夹
     doNewDir(){
+      this.newdir.loading =true
       console.log("new dir..."+this.newdir.dirpath)
         newdir({
           path:this.newdir.dirpath
         }).then(res=>{
-          console.log('创建文件成功')
+          this.$message({
+            message:"创建文件夹成功",
+            type:"success"
+          })
+          this.refresh()
           console.log(res)
         }).catch(err=>{
+           this.$message({
+            message:"创建文件夹失败",
+            type:"error"
+          })
           console.log('创建文件失败')
           console.log(err)
+        }).then(()=>{
+          this.newdir.loading =false
         })
     },
     viewfile(data,node){
       let path = this.getPath(node)
-      console.log("ab:"+path)
+      console.log("viewfile ... ab:"+path)
       this.filePath = path
       console.log(data)
       console.log(node)
@@ -92,6 +147,9 @@ export default {
     {
       if(node.level==0)
       {
+        // 保存根节点，用于刷新
+        this.node_root=node;
+        this.resolve_root = resolve;
         return resolve([{
           pathSuffix:'/',
           type:'DIRECTORY'
@@ -124,9 +182,14 @@ export default {
   },
 data(){
   return {
+    // 根节点
+    node_root:{},
+    resolve_root:{},
     newdir:{
-      dirpath:""
+      dirpath:"",
+      loading:false,
     },
+    deleteloading:false,
     showDialog:false,
     // 当前点击文件路径
     filePath:"",

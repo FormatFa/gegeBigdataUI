@@ -40,6 +40,12 @@ export default {
     mixins:[compMixin],
     name:"col-select",
     methods:{ 
+        setConf()
+        {
+          console.log("col-select自定的setConf")
+      this.columns=this.conf['columns'].split(",")
+      this.inputCol=this.columns.join(",")
+        },
         getConf(){
           return {
             columns:this.columns.join(",")
@@ -64,16 +70,7 @@ export default {
       console.log("col-select created")
     },
     mounted(){
-      if(this.conf==undefined)
-      {
-        console.error('col-select 子组件没有检查到conf配置，跳过配置')
-        return
-      }
-      console.log("col-select mounted了，设置父组件传递过来的conf")
-      //获取配置里的数据
-      console.debug(this.conf)
-      this.columns=this.conf['columns'].split(",")
-      this.inputCol=this.columns.join(",")
+
     },
     computed:{
         availableColumns(){
