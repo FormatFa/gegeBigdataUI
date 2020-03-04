@@ -4,7 +4,7 @@
    
       <el-header> 
         <el-container>
-             <h1>xx平台</h1>
+             <h1>大数据离线分析平台</h1>
         <el-menu
     @select="handleSelect"
     :router="true"

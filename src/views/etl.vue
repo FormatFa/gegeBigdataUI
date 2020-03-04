@@ -36,7 +36,7 @@
   >
   <el-row>
     <!-- 状态 -->
-    <div>任务状态:{{this.task.stateText}}</div>
+    <div :style="{color:getStateColor()}">任务状态:{{this.task.stateText}}</div>
     <!-- 日志 -->
     <div>
       <el-input
@@ -111,6 +111,23 @@ methods:{
         else
         return '未知状态:'+state
       },
+         getStateColor(){
+           let state = this.task.state
+        if(state=='dead')
+        {
+          return '#909399'
+        }
+        else if(state=='success')
+        {
+          return '#67C23A'
+        }
+        else if(state=="running")
+        {
+          return "#E6A23C"
+        }
+        else
+        return '未知状态:'+state
+      },
   addProject(){
     console.log('添加project')
     post('/api/etl/projects/',{
@@ -135,13 +152,22 @@ methods:{
     }
     else
     {
+    
     this.task.log=data.log.log.join('\n')
     this.task.state = data.state.state
     this.task.stateText = this.getState(this.task.state)
+    if(this.task.state=="running")
+    {
+      // 正在运行中时切换按钮为加载中
+      this.task.executing=true
+    }
+    else{
+      this.task.executing=false
+    }
     }
   },
   deleteTask(projectid){
-    delete2('api/etl/projects/'+projectid).then(res=>{
+    delete2('/api/etl/projects/'+projectid).then(res=>{
       console.log("删除成功")
       console.log(res)
 
@@ -180,9 +206,11 @@ this.task.executing = true
 console.debug("提交任务:"+projectid)
 submitTask({
   id:projectid
-}).then(res=>{
-  console.log("提交结果:")
-  console.log(res)
+}).then(()=>{
+  console.log("提交结果:完成，正在查询结果")
+  
+  this.queryTask(projectid)
+
 }).catch(err=>{
   console.error("提交任务失败")
   console.error(err)

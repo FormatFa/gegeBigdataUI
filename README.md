@@ -1,24 +1,22 @@
-# gegebigdataui
+# 基于Spark的大数据离线分析平台 Vue.js前端
 
-## Project setup
-```
-npm install
-```
+### 传送门
+阿里云预览地址:
+http://47.105.180.125:8000/gegebigdata/index.html
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Vue.js 前端:
+https://gitee.com/FormatFa/gegeBigdataUI
+https://github.com/FormatFa/gegeBigdataUI
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Django 后端:
+https://gitee.com/FormatFa/gegeBigData
+https://github.com/FormatFa/gegeBigData
 
-### Lints and fixes files
-```
-npm run lint
-```
+Spark处理核心:
+https://gitee.com/FormatFa/gegeCore
+https://github.com/FormatFa/gegeCore
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### 本地测试
+    - 修改http.js
+    - 修改vue.config.js

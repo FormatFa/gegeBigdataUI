@@ -1,5 +1,5 @@
 module.exports={
-
+    publicPath:"/gegebigdata",
     // 设置开发时代理服务器
 devServer:{
     open:true,

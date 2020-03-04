@@ -9,9 +9,12 @@
     <div slot="header">
       <span>ETL设置</span>
     </div>
-    <!--  -->
+    
+    Apache Livy 地址
     <el-input  v-model="config.livyUrl" placeholder="livy地址">
     </el-input>
+
+    ETL Spark程序路径<el-input  v-model="config.coreJar" placeholder="Jar地址"></el-input>
   </el-card>
   <el-card>
     <div slot="header">
@@ -27,8 +30,20 @@
     </div>
     <el-row>
       Hive Server2 地址: <el-input placeholder='地址' v-model="config.hiveServer2Url"></el-input>
-      
     </el-row>
+  </el-card>
+  <el-card>
+    <div slot="header">
+      <span>项目地址</span>
+    </div>
+    <el-row>
+      Gitee: <el-link type="primary" href="https://gitee.com/FormatFa/gegeBigdataUI">https://gitee.com/FormatFa/gegeBigdataUI</el-link>
+    </el-row>
+    <el-row>
+      Github: <el-link type="primary" href="https://github.com/FormatFa/gegeBigdataUI">https://gitee.com/FormatFa/gegeBigdataUI</el-link>
+    </el-row>
+    
+    
   </el-card>
 </el-row>
 
@@ -37,7 +52,7 @@
 </template>
 
 <script>
-import {get, post} from '../api/http.js'
+import {get, fpost} from '../api/http.js'
 // 
 export default {
   mounted(){
@@ -47,11 +62,20 @@ export default {
   },
   methods:{
     saveSetting(){
-      post('/api/user/setSetting',{
+      fpost('/api/user/setSetting',{
         settings:JSON.stringify(this.config)
       }).then(res=>{
-        console.log('保存成功')
+        this.$message({
+          message:"保存成功",
+          type:"success"
+        })
         console.log(res)
+      }).catch(err=>{
+        this.$message({
+          message:err,
+          type:"error"
+        })
+
       })
     },
     requestData(){
@@ -61,6 +85,7 @@ export default {
         let data = res.data
         this.config.livyUrl = data.livyUrl
         this.config.hdfsUrl = data.hdfsUrl
+        this.config.coreJar = data.coreJar
         this.config.hiveServer2Url=data.hiveServer2Url
       }).catch(err=>{
         console.log(err)
@@ -74,6 +99,7 @@ export default {
         livyUrl:'',
         hdfsUrl:'',
         hiveServer2Url:'',
+        coreJar:''
 
       }
 

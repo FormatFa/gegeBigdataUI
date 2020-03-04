@@ -4,9 +4,11 @@ import QS from 'qs'
 // import {resolve,reject} from 'q'
 // import router  from '../router.js'
 // import {Message} from 'element-ui'
-
+// 统一封装的http请求
 // const faxios = axios.default;
 
+//api /开头，默认会接到域名下
+// axios.defaults.baseURL="http://localhost:8000/"
 // 封装axios
 export function get(url,params){
     return new Promise((resolve,reject)=>{

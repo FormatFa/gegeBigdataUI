@@ -1,10 +1,9 @@
 <template>
-  
+
   <div>
     <!-- 集群常见端口 -->
 
       <h1>HDFS 文件浏览 </h1>
-    
       <!-- 集群文件浏览 -->
       <el-tree 
       :props="props"
