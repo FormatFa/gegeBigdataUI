@@ -149,6 +149,7 @@ methods:{
     {
       this.task.log=data.state.msg
       this.task.stateText = "请求查询错误"
+      this.task.executing=false
     }
     else
     {
